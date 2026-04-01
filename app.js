@@ -93,9 +93,7 @@ function render() {
   app.innerHTML = `
     <div class="timer">⏱ Time Left: <span id="time">30s</span></div>
 
-    <div class="progress">
-      <div class="progress-bar" style="width: ${(index / questions.length) * 100}%"></div>
-    </div>
+    
 
     <div class="question">Q${index + 1}: ${q.question}</div>
 
