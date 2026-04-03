@@ -3,6 +3,14 @@
 
       font-family: 'Segoe UI', sans-serif;
     }
+    .navbar{
+      background-color: #ABD1C6;
+      
+    }
+    .navbar-brand{
+      color: #004643 !important;
+      font-size: 30px;
+    }
   .indiv:hover{
       background-color: #ABD1C6;
     }
@@ -53,4 +61,11 @@
   .submi a{
     text-decoration: none !important;
     color: white;
+  }
+
+  .Logoutbut{
+    background-color: #004643;
+  }
+  .Logoutbut a{
+    text-decoration: none !important;
   }
