@@ -64,6 +64,7 @@ var questions = [
 ];
 var index = 0;
 var score = 0;
+var interval = null;
 function renderQuiz(){
   var quizcontainer = document.getElementById("quizcontainer")
   var option = document.getElementsByName("option")
@@ -75,13 +76,48 @@ function renderQuiz(){
       }
     }
   }
+
   if(!questions[index]){
-    quizcontainer.innerHTML = `<h1>${score}</h1>`
-    return
-  }
-  
+  var percentage = Math.round((score / questions.length) * 100)
+  var username = localStorage.getItem("username") 
+
   quizcontainer.innerHTML = `
-    <div class="bg-light timer d-flex align-items-center justify-content-center mx-auto"><h3 class="text-center mt-1" id="timer">30</h3></div>
+    <div class="d-flex justify-content-center align-items-center ">
+      <div class="card shadow-lg text-center p-5" style="width: 350px; border-radius: 20px; backgroud-color:#ABD1C6;>
+        
+        <h2 class="mb-2 f-bold"> Quiz Completed</h2>
+
+        <h4 class="text-dark mb-3">
+          👤 ${username ? username : "User"}
+        </h4>
+        
+        <h1 class="text-success fw-bold display-4">
+          ${score} / ${questions.length}
+        </h1>
+
+        <h3 class="text-primary mt-2">
+          ${percentage}%
+        </h3>
+        
+        <p class="mt-3 text-muted">
+          ${percentage === 100 
+            ? "Perfect! 🔥" 
+            : percentage >= 50 
+              ? "Good Job 👍" 
+              : "Keep Practicing 💪"}
+        </p>
+
+        <button class="btn btn-primary mt-3" onclick="location.reload()">
+          🔄 Restart Quiz
+        </button>
+
+      </div>
+    </div>
+  `
+  return
+}
+  quizcontainer.innerHTML = `
+    <div class="bg-light timer d-flex align-items-center justify-content-center mx-auto"><h3 class="text-center mt-1" id="timer"></h3></div>
       <p class="fw-bold fs-5 card p-4 mt-2">${questions[index].question}</p>
       <div>
         <div class="card p-1 mt-4 indiv ">
@@ -108,34 +144,70 @@ function renderQuiz(){
 
   `
   
-  index++
+ 
   timer()
 }
+ 
 function next(){
+  var option = document.getElementsByName("option")
+  var selected = false
 
+  for(var i = 0; i < option.length; i++){
+    if(option[i].checked){
+      selected = true
+      break
+    }
+  }
+
+  if(!selected){
+    Swal.fire({
+      icon: 'warning',
+      title: 'Oops...',
+      text: 'Please select an option first!',
+      confirmButtonColor: '#3085d6'
+    })
+    return
+  }
+  clearInterval(interval)
+  index++
+  renderQuiz()
 }
-
+function previous(){
+  if(index > 0){
+    clearInterval(interval)
+    index -= 1
+    renderQuiz()
+  }
+}
 renderQuiz()
 
 
 function timer(){
+  clearInterval(interval) 
+
   var time = 30; 
-  var interval = setInterval(()=>{
-   var timeid = document.getElementById("timer")
-   timeid.innerHTML = time 
-   time--
-   if(time < 0 ){
-     clearInterval(interval)
-     renderQuiz()
-   }
+  interval = setInterval(()=>{
+    var timeid = document.getElementById("timer")
+    if(timeid){
+      timeid.innerHTML = time 
+    }
+
+    time--
+
+    if(time < 0 ){
+      clearInterval(interval)
+      renderQuiz()
+    }
   },1000)
 }
+
 function submit(){
-  var submit = document.getElementsByClassName("enName")[0]
+  var nameInput = document.getElementsByClassName("enName")[0]
   var suba = document.getElementById("submit")
   
-  if(submit.value.trim()){
+  if(nameInput.value.trim()){
     var suba = document.getElementById("submit")
+    localStorage.setItem("username", nameInput.value)
     suba.setAttribute("href", "quiz.html")
   }
 }
